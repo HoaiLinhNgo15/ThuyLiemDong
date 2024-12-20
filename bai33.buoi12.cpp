@@ -10,6 +10,10 @@ void xuatPS (PHAN_SO a);
 void nhapDS (PHAN_SO a[], int n);
 void xuatDS (PHAN_SO a[], int n);
 void rutgon (PHAN_SO *a);
+float GiaTri (PHAN_SO a);
+void timMin (PHAN_SO a[], int n);
+int demMin (PHAN_SO a[], int n);
+void sapGiam (PHAN_SO a[], int n);
 
 int main()
 {
@@ -24,7 +28,7 @@ int main()
 		scanf("%d", &n);
 	}while(n<=0);
 	ps2=(PHAN_SO*)malloc(n*sizeof(PHAN_SO));
-/*	ps=(PHAN_SO*)malloc(n*sizeof(PHAN_SO));
+	ps=(PHAN_SO*)malloc(n*sizeof(PHAN_SO));
 	
 	//nhap danh sach voi n phan so
 	printf("\nNhap danh sach cac phan so: ");
@@ -44,7 +48,7 @@ int main()
 			fwrite(&ps[i], sizeof(PHAN_SO), n, fp);
 		}
 		fclose(fp);
-	}	*/
+	}
 	
 	printf("\nNhap duong dan can doc: ");
 	fflush(stdin);
@@ -56,21 +60,28 @@ int main()
 	else 
 	{
 		int i=0;
-		while(!feof(fp2))
-		{
-			fread(&ps2[i], sizeof(PHAN_SO), 1, fp2);
-			m++;
-			i++;
-			ps2=(PHAN_SO*)realloc(ps2, sizeof(PHAN_SO)*m);
-		}
+	while(!feof(fp2))
+	{
+		fread(&ps2[i], sizeof(PHAN_SO), 1, fp2);
+		m++;
+		i++;
+		ps2=(PHAN_SO*)realloc(ps2, sizeof(PHAN_SO)*m);
+	}
 		fclose(fp2);
 	}
 	printf("\nDanh sach cac phan so vua doc: ");
 	xuatDS(ps2, n);
-	free(ps2);
+
+	printf("\nPhan so co gia tri nho nhat la: ");
+	timMin(ps2, n);
+	
+	printf("\nSo phan so nho nhat: %d", demMin(ps2, n));
+	
+	printf("\nSau khi sap xep giam dan: ");
+	sapGiam(ps2,n);
+	xuatDS(ps2, n);
 	return 0;
 }
-
 
 void rutgon (PHAN_SO *a)
 {
@@ -114,8 +125,62 @@ void xuatDS (PHAN_SO a[], int n)
 {
 	for (int i=0 ; i<n ; i++)
 	{
+		rutgon(&a[i]);
 		xuatPS(a[i]);
 		printf("\t");
 	}
 }
 
+float GiaTri (PHAN_SO a)
+{
+	float temp;
+	temp=(float)(a.tu)/(a.mau);
+	return temp;
+}
+void timMin (PHAN_SO a[], int n)
+{
+	float min=GiaTri(a[0]);
+	PHAN_SO t;
+	for(int i=0 ; i<n ; i++)
+	{
+		if(GiaTri(a[i])<min)
+			min=GiaTri(a[i]);
+	}
+	for (int i=0 ; i<n ; i++)
+	{
+		if(GiaTri(a[i])==min)
+			xuatPS(a[i]);
+	}
+}
+int demMin (PHAN_SO a[], int n)
+{
+	int dem=0;
+	float min=GiaTri(a[0]);
+	for(int i=0 ; i<n ; i++)
+	{
+		if(GiaTri(a[i])<min)
+			min=GiaTri(a[i]);
+	}
+	for (int i=0 ; i<n ; i++)
+	{
+		if(GiaTri(a[i])==min)
+			dem++;
+	}
+	return dem;
+}
+void sapGiam (PHAN_SO a[], int n)
+{
+	PHAN_SO t;
+	for(int i=0; i<n-1 ; i++)
+	{
+		for(int j=i+1 ; j<n ; j++)
+		{
+			if(GiaTri(a[i])<GiaTri(a[j]))
+			{
+				t=a[i];
+				a[i]=a[j];
+				a[j]=t;
+			}
+		}
+	}
+}
